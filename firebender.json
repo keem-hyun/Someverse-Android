@@ -4,8 +4,7 @@
     "Domain layer must not depend on Android Framework or external libraries",
     "Domain layer must not import data or presentation layers",
     "Presentation layer must not directly reference data layer",
-    "Follow multi-module architecture",
-    "Feature modules must not depend on each other",
+    "Follow layer-based multi-module architecture (presentation, domain, data)",
     "Use Version Catalog for dependency version management",
     {
       "filePathMatches": "**/*.kt",
@@ -30,9 +29,8 @@
       "filePathMatches": "**/domain/**/*.kt",
       "rules": [
         "Must not import or use Android Framework classes (Context, Activity, Fragment, ViewModel, etc.)",
-        "Must not use external libraries (excluding Retrofit, Room, and DI annotations from Hilt)",
+        "Must not use external libraries except Coroutines and DI annotations",
         "Must not import data or presentation packages",
-        "Must not import feature packages",
         "Repository must only be defined as Interface",
         "Must use pure Kotlin code only"
       ]
@@ -40,19 +38,17 @@
     {
       "filePathMatches": "**/data/**/*.kt",
       "rules": [
-        "Implement Domain's Repository Interface",
+        "Implement domain's Repository Interface",
         "Use Mapper to convert DTO to Domain Model",
         "Do not import presentation packages",
-        "Do not import feature packages",
         "Return Domain Model, not DTO directly"
       ]
     },
     {
-      "filePathMatches": "**/feature/**/*.kt",
+      "filePathMatches": "**/presentation/**/*.kt",
       "rules": [
-        "Depend only on Domain's UseCase",
+        "Depend only on domain's UseCase",
         "Do not directly import or reference data packages",
-        "Do not import other feature packages (no direct dependency between features)",
         "Do not use Repository directly, access only through UseCase",
         "Do not write business logic in ViewModel",
         "Use UI Model for complex data transformation"
@@ -70,7 +66,7 @@
       "filePathMatches": "**/*ViewModel.kt",
       "rules": [
         "Inject only UseCases (no direct Repository injection)",
-        "Use @HiltViewModel annotation",
+        "Use @HiltViewModel annotation when Hilt is added",
         "Business logic must be separated into UseCases",
         "Clearly define and use UI State"
       ]
@@ -80,14 +76,14 @@
       "rules": [
         "Follow Single Responsibility Principle",
         "Implement operator fun invoke",
-        "Use @Inject constructor for dependency injection"
+        "Use @Inject constructor for dependency injection when Hilt is added"
       ]
     },
     {
       "filePathMatches": "**/settings.gradle.kts",
       "rules": [
         "All modules must be registered with include",
-        "Module names must follow clear naming conventions (:feature:feature-*, :domain:domain-*, :data:data-*, :core:core-*)"
+        "Current modules: :app, :presentation, :domain, :data"
       ]
     }
   ]
