@@ -49,11 +49,14 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-
-    // Hilt
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+
+    // Kakao SDK
+    implementation(libs.kakao.sdk.user)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
