@@ -1,46 +1,71 @@
 package com.someverse.domain.usecase.auth
 
-import com.someverse.domain.model.AuthToken
-import com.someverse.domain.model.SocialProvider
+import com.someverse.domain.model.AuthStatus
 import com.someverse.domain.repository.AuthRepository
 import javax.inject.Inject
 
 /**
  * Social Login Use Case
- * - Single Responsibility: Handle social login for any provider
- * - Validates auth code
- * - Delegates to AuthRepository
+ *
+ * Complete OAuth login flow:
+ * 1. Receive JWT token from OAuth callback
+ * 2. Save JWT token to local storage (TODO: implement token storage)
+ * 3. Fetch auth status to check onboarding state
+ * 4. Return AuthStatus for navigation decision
+ *
+ * This UseCase encapsulates the entire post-OAuth flow,
+ * maintaining Clean Architecture by keeping all business logic in domain layer.
+ *
+ * Backend Flow (already completed):
+ * - WebView → Backend OAuth URL
+ * - Backend → Social provider login
+ * - User approves → Backend receives auth code
+ * - Backend → Exchanges code for token, gets user info, creates JWT
+ * - Backend → Redirects to app with JWT
+ *
+ * App Flow (this UseCase):
+ * - WebView extracts JWT token
+ * - **This UseCase: Save token + Get auth status**
+ * - Return AuthStatus with onboarding state
  *
  * Usage:
  * ```
- * // Kakao
- * socialLoginUseCase(SocialProvider.KAKAO, authCode)
+ * val result = socialLoginUseCase(jwtToken)
+ * result.onSuccess { authStatus ->
+ *     if (authStatus.onboardingCompleted) {
+ *         navigateToMain()
+ *     } else {
+ *         navigateToOnboarding()
+ *     }
+ * }
+ * ```
  */
 class SocialLoginUseCase @Inject constructor(
     private val authRepository: AuthRepository
+    // TODO: Inject TokenRepository for token storage
 ) {
     /**
-     * Login with social provider
+     * Complete social login process
      *
-     * @param provider Social login provider (KAKAO.. add more as needed)
-     * @param authCode Authorization code from social provider SDK
-     * @return Result<AuthToken> containing auth token or error
+     * @param jwtToken JWT token from OAuth callback
+     * @return Result<AuthStatus> with user info and onboarding state
      */
-    suspend operator fun invoke(
-        provider: SocialProvider,
-        authCode: String
-    ): Result<AuthToken> {
-        // Business logic: Validate input
-        if (authCode.isBlank()) {
+    suspend operator fun invoke(jwtToken: String): Result<AuthStatus> {
+        // Validate input
+        if (jwtToken.isBlank()) {
             return Result.failure(
-                IllegalArgumentException("Auth code cannot be blank")
+                IllegalArgumentException("JWT token cannot be blank")
             )
         }
 
-        // Delegate to repository
-        return authRepository.socialLogin(
-            provider = provider,
-            authCode = authCode
-        )
+        return try {
+            // TODO: Save JWT token
+            // tokenRepository.saveToken(jwtToken)
+
+            // Get auth status (calls GET /users/me)
+            authRepository.getAuthStatus()
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
