@@ -2,28 +2,43 @@ package com.someverse.domain.model
 
 /**
  * User Model
- * - nickname, gender, birth, address may be null during onboarding
- * - Use isOnboardingComplete to check if profile is fully set up
  */
 data class User(
     val id: String,
-    val email: String,
+    val provider: SocialProvider,
     val nickname: String?,
+    val birthDate: String?,
     val gender: Gender?,
-    val birth: String?,
-    val address: List<String>?,
-    val profileImageUrl: String?,
-    val createdAt: Long,
-    val updatedAt: Long
-) {
-    /**
-     * Check if onboarding is complete
-     * All required fields must be non-null
-     */
-    val isOnboardingComplete: Boolean
-        get() = nickname != null &&
-                gender != null &&
-                birth != null &&
-                address != null &&
-                profileImageUrl != null
-}
+    val activityLocations: List<Location>?,
+    val profileImages: List<String>?,
+    val primaryImageUrl: String?,
+    val bio: String?,
+    val job: String?,
+    val favoriteMovies: List<Movie>?,
+    val preferredGenres: List<Genre>?
+)
+
+/**
+ * Location Model
+ */
+data class Location(
+    val city: String,
+    val district: String
+)
+
+/**
+ * Movie Model (Basic Info)
+ */
+data class Movie(
+    val movieId: Long,
+    val title: String,
+    val posterPath: String?
+)
+
+/**
+ * Genre Model
+ */
+data class Genre(
+    val genreId: Long,
+    val name: String
+)
