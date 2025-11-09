@@ -5,6 +5,11 @@ plugins {
     kotlin("kapt")
 }
 
+// Disable hilt aggregating task to avoid the javapoet conflict
+hilt {
+    enableAggregatingTask = false
+}
+
 android {
     namespace = "com.someverse.data"
     compileSdk = 36

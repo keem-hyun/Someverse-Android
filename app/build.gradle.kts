@@ -9,6 +9,11 @@ plugins {
     kotlin("kapt")
 }
 
+// Disable hilt aggregating task to avoid the javapoet conflict
+hilt {
+    enableAggregatingTask = false
+}
+
 // Read local.properties
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
