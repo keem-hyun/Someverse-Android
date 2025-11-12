@@ -4,6 +4,7 @@ import com.someverse.data.model.AuthTokenEntity
 import com.someverse.data.model.UserEntity
 import com.someverse.data.source.AuthDataSource
 import com.someverse.domain.model.Gender
+import com.someverse.domain.model.Location
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +35,7 @@ class AuthLocalDataSource @Inject constructor() : AuthDataSource {
             id = "user_${System.currentTimeMillis()}",
             nickname = null, // Not included in auth status response
             age = null,
-            gender = "WOMAN",
+            gender = "FEMALE",
             activityLocations = null,
             profileImages = null,
             primaryImageUrl = null,
@@ -148,16 +149,18 @@ class AuthLocalDataSource @Inject constructor() : AuthDataSource {
         return updatedUser
     }
 
-    override suspend fun submitAddress(address: String): UserEntity {
+    override suspend fun submitAddress(address: List<String>): UserEntity {
         delay(100)
 
         // TODO: Update based on actual backend API for address
         val updatedUser = currentUser?.copy(
+            // In a real implementation, we would save the address list to a field
+            // For now, just updating the timestamp as before
             updatedAt = System.currentTimeMillis()
         ) ?: throw IllegalStateException("No user logged in")
 
         saveUser(updatedUser)
-        println(" Local: Address saved -> $address")
+        println(" Local: Addresses saved -> $address")
         return updatedUser
     }
 
@@ -198,6 +201,28 @@ class AuthLocalDataSource @Inject constructor() : AuthDataSource {
             "isAuthenticated" to isAuthenticatedFlag,
             "token" to storedToken,
             "user" to currentUser
+        )
+    }
+
+    override suspend fun getAddressList(): List<Location> {
+        // Simulated delay
+        delay(300)
+
+        // Return mock address list data
+        return listOf(
+            Location("서울특별시", "강남구"),
+            Location("서울특별시", "서초구"),
+            Location("서울특별시", "마포구"),
+            Location("서울특별시", "종로구"),
+            Location("서울특별시", "영등포구"),
+            Location("경기도", "성남시"),
+            Location("경기도", "수원시"),
+            Location("경기도", "화성시"),
+            Location("경기도", "의정부시"),
+            Location("부산광역시", "해운대구"),
+            Location("부산광역시", "중구"),
+            Location("인천광역시", "중구"),
+            Location("인천광역시", "연수구")
         )
     }
 }

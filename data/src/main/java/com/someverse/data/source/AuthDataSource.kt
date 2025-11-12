@@ -3,6 +3,7 @@ package com.someverse.data.source
 import com.someverse.data.model.AuthTokenEntity
 import com.someverse.data.model.UserEntity
 import com.someverse.domain.model.Gender
+import com.someverse.domain.model.Location
 
 /**
  * Auth DataSource Interface
@@ -77,7 +78,7 @@ interface AuthDataSource {
      * Submit address
      * @return Updated UserEntity
      */
-    suspend fun submitAddress(address: String): UserEntity
+    suspend fun submitAddress(address: List<String>): UserEntity
 
     /**
      * Submit profile image URL
@@ -96,4 +97,9 @@ interface AuthDataSource {
      * Save user to local storage (cache)
      */
     suspend fun saveUser(user: UserEntity)
+
+    /**
+     * Get all available locations for address selection
+     */
+    suspend fun getAddressList(): List<Location>
 }

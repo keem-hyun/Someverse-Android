@@ -6,6 +6,7 @@ import com.someverse.domain.model.AuthToken
 import com.someverse.domain.model.Gender
 import com.someverse.domain.model.SocialProvider
 import com.someverse.domain.model.User
+import com.someverse.domain.model.Location
 import com.someverse.domain.repository.AuthRepository
 import javax.inject.Inject
 
@@ -108,10 +109,10 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun submitAddress(address: String): Result<User> {
+    override suspend fun submitAddress(address: List<String>): Result<User> {
         return try {
-            if (address.isBlank()) {
-                return Result.failure(Exception("Address cannot be empty"))
+            if (address.isEmpty()) {
+                return Result.failure(Exception("Address list cannot be empty"))
             }
 
             val userEntity = dataSource.submitAddress(address)
@@ -125,6 +126,15 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val userEntity = dataSource.submitProfileImage(imageUrl)
             Result.success(userEntity.toDomain())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getAddressList(): Result<List<Location>> {
+        return try {
+            val locations = dataSource.getAddressList()
+            Result.success(locations)
         } catch (e: Exception) {
             Result.failure(e)
         }

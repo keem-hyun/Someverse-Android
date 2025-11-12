@@ -4,6 +4,7 @@ import com.someverse.domain.model.AuthStatus
 import com.someverse.domain.model.AuthToken
 import com.someverse.domain.model.Gender
 import com.someverse.domain.model.User
+import com.someverse.domain.model.Location
 
 /**
  * Authentication Repository Interface
@@ -63,7 +64,7 @@ interface AuthRepository {
      * Submit address (Step 4)
      * @return Updated User with address
      */
-    suspend fun submitAddress(address: String): Result<User>
+    suspend fun submitAddress(address: List<String>): Result<User>
 
     /**
      * Submit profile image URL (Step 5)
@@ -76,4 +77,10 @@ interface AuthRepository {
      * 4. Backend stores URL in database and returns updated User
      */
     suspend fun submitProfileImage(imageUrl: String): Result<User>
+
+    /**
+     * Get all available locations for address selection
+     * @return List of available locations (city + district)
+     */
+    suspend fun getAddressList(): Result<List<Location>>
 }
