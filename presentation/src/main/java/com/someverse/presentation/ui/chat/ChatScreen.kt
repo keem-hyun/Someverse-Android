@@ -2,6 +2,7 @@ package com.someverse.presentation.ui.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,6 +76,7 @@ private fun ChatTopBar() {
  */
 @Composable
 fun ChatScreen(
+    onNavigateToWaitingRoom: () -> Unit,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -108,7 +110,8 @@ fun ChatScreen(
 
                 else -> {
                     ChatListContent(
-                        chatList = uiState.chatList
+                        chatList = uiState.chatList,
+                        onPendingChatClick = onNavigateToWaitingRoom
                     )
                 }
             }
@@ -118,7 +121,8 @@ fun ChatScreen(
 
 @Composable
 private fun ChatListContent(
-    chatList: List<Chat>
+    chatList: List<Chat>,
+    onPendingChatClick: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -129,7 +133,10 @@ private fun ChatListContent(
         val pendingChat = chatList.firstOrNull { it.status == ChatStatus.PENDING }
         if (pendingChat != null) {
             item {
-                PendingChatCard(chat = pendingChat)
+                PendingChatCard(
+                    chat = pendingChat,
+                    onClick = onPendingChatClick
+                )
             }
         }
 
@@ -147,7 +154,8 @@ private fun ChatListContent(
 
 @Composable
 private fun PendingChatCard(
-    chat: Chat
+    chat: Chat,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -166,6 +174,7 @@ private fun PendingChatCard(
                 color = Background,
                 shape = RoundedCornerShape(16.dp)
             )
+            .clickable { onClick() }
             .padding(16.dp)
     ) {
         Row(

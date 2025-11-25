@@ -27,6 +27,7 @@ import com.someverse.presentation.ui.feed.FeedScreen
 import com.someverse.presentation.ui.matching.MatchingScreen
 import com.someverse.presentation.ui.myprofile.MyProfileScreen
 import com.someverse.presentation.ui.theme.PrimaryPurple
+import com.someverse.presentation.ui.waitingroom.WaitingRoomScreen
 
 /**
  * Main Screen with Bottom Navigation
@@ -60,7 +61,19 @@ fun MainScreen() {
             }
 
             composable(Screen.Chat.route) {
-                ChatScreen()
+                ChatScreen(
+                    onNavigateToWaitingRoom = {
+                        navController.navigate(Screen.WaitingRoom.route)
+                    }
+                )
+            }
+
+            composable(Screen.WaitingRoom.route) {
+                WaitingRoomScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }
