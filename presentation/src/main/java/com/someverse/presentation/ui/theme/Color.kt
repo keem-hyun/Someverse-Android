@@ -23,5 +23,7 @@ val GradationStart = Color(0xFF7451C9)
 val GradationEnd = Color(0xFFFD71A6)
 
 val Background =  Color(0x4DFFFFFF)
+val ChatBackground = Color(0xFFFAFAFA)
+val ChatInputBackground = Color(0xFFEBEFF5)
 
 val TextPrimary = Color(0xFF000000)
