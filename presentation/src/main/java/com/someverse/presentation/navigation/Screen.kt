@@ -27,4 +27,8 @@ sealed class Screen(val route: String) {
 
     // Chat Related Screens
     data object WaitingRoom : Screen("waiting_room")
+    data object DetailChat : Screen("detail_chat/{roomId}") {
+        fun createRoute(roomId: Long) =
+            "detail_chat/$roomId"
+    }
 }
