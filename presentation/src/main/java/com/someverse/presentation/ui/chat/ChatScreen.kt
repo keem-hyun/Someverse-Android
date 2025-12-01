@@ -77,6 +77,7 @@ private fun ChatTopBar() {
 @Composable
 fun ChatScreen(
     onNavigateToWaitingRoom: () -> Unit,
+    onNavigateToDetailChat: (Long) -> Unit,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -111,7 +112,10 @@ fun ChatScreen(
                 else -> {
                     ChatListContent(
                         chatList = uiState.chatList,
-                        onPendingChatClick = onNavigateToWaitingRoom
+                        onPendingChatClick = onNavigateToWaitingRoom,
+                        onChatClick = { roomId ->
+                            onNavigateToDetailChat(roomId.toLong())
+                        }
                     )
                 }
             }
@@ -122,7 +126,8 @@ fun ChatScreen(
 @Composable
 private fun ChatListContent(
     chatList: List<Chat>,
-    onPendingChatClick: () -> Unit
+    onPendingChatClick: () -> Unit,
+    onChatClick: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -143,7 +148,10 @@ private fun ChatListContent(
         // Active chats
         val activeChats = chatList.filter { it.status == ChatStatus.ACTIVE }
         items(activeChats) { chat ->
-            ChatListItem(chat = chat)
+            ChatListItem(
+                chat = chat,
+                onClick = { onChatClick(chat.roomId) }
+            )
             HorizontalDivider(
                 color = Divider,
                 thickness = 1.dp

@@ -1,6 +1,7 @@
 package com.someverse.presentation.ui.chat
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,13 +31,15 @@ import com.someverse.presentation.ui.theme.ChipGray
 
 @Composable
 fun ChatListItem(
-    chat: Chat
+    chat: Chat,
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Background)
-            .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 12.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 12.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Profile image and text content in a row
