@@ -6,4 +6,7 @@
     <string name="signup_done_welcome_message">가입을\n축하드려요!</string>
     <string name="signup_done_description">이제 당신의 취향 메이트를 만나러 가볼까요?</string>
     <string name="signup_done_start_button">썸버스 시작하기</string>
+
+    <!-- Chat Screen -->
+    <string name="chat_title">채팅</string>
 </resources>
