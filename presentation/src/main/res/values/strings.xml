@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">someverse</string>
+    
+    <!-- Matching -->
+    <string name="matching">매칭</string>
+
+    <!-- Feed -->
+    <string name="feed">피드</string>
+
+    <!-- My -->
+    <string name="my">my</string>
 
     <!-- Signup Done Screen -->
     <string name="signup_done_title">승인완료</string>
