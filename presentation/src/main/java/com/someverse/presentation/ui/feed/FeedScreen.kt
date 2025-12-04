@@ -4,8 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.someverse.presentation.R
 import com.someverse.presentation.ui.theme.*
+import kotlin.math.absoluteValue
 
 /**
  * Feed Screen
@@ -189,27 +191,61 @@ fun FeedContent(
                 // Success state with feeds
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Spacer(modifier = Modifier.height(100.dp))
 
-                    // Horizontal scrolling feed with actual data from ViewModel
-                    LazyRow(
+                    // Horizontal paging feed with page animation
+                    val pagerState = rememberPagerState(
+                        initialPage = 0,
+                        pageCount = { uiState.feeds.size }
+                    )
+
+                    HorizontalPager(
+                        state = pagerState,
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(48.dp)
-                    ) {
-                        items(
-                            items = uiState.feeds,
-                            key = { feed -> feed.id }
-                        ) { feed ->
+                        contentPadding = PaddingValues(horizontal = 68.dp),
+                        pageSpacing = 8.dp
+                    ) { page ->
+                        val feed = uiState.feeds[page]
+                        val pageOffset =
+                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .graphicsLayer {
+                                    // 페이지 전환 애니메이션
+                                    val scale =
+                                        1f - (pageOffset.absoluteValue * 0.15f).coerceAtMost(0.15f)
+                                    scaleX = scale
+                                    scaleY = scale
+
+                                    // 투명도 효과
+                                    alpha =
+                                        1f - (pageOffset.absoluteValue * 0.3f).coerceAtMost(0.5f)
+                                },
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             FeedCard(
                                 feed = feed,
                                 movieTitle = "어쩔수가없다",
                                 movieYear = "(2025)",
-                                modifier = Modifier
-                                    .fillParentMaxWidth() // 화면 너비를 채움
-                                    .padding(horizontal = 68.dp) // 좌우 여백으로 너비 조정
+                                modifier = Modifier.fillMaxWidth()
                             )
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            // Profile image circle
+                            Box(
+                                modifier = Modifier
+                                    .size(108.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFD9D9D9)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // TODO: Add profile image here
+                            }
                         }
                     }
 
@@ -296,7 +332,7 @@ fun FeedCard(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 25.dp, end = 16.dp),
+                            .padding(start = 9.dp),
                         verticalAlignment = Alignment.Top
                     ) {
                         // Movie poster
