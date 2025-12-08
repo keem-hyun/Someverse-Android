@@ -3,15 +3,19 @@ package com.someverse.data.di
 import com.someverse.data.impl.AuthRepositoryImpl
 import com.someverse.data.impl.ChatRepositoryImpl
 import com.someverse.data.impl.FeedRepositoryImpl
+import com.someverse.data.impl.PointRepositoryImpl
 import com.someverse.data.local.AuthLocalDataSource
 import com.someverse.data.local.ChatLocalDataSource
 import com.someverse.data.local.FeedLocalDataSource
+import com.someverse.data.local.PointLocalDataSource
 import com.someverse.data.source.AuthDataSource
 import com.someverse.data.source.ChatDataSource
 import com.someverse.data.source.FeedDataSource
+import com.someverse.data.source.PointDataSource
 import com.someverse.domain.repository.AuthRepository
 import com.someverse.domain.repository.ChatRepository
 import com.someverse.domain.repository.FeedRepository
+import com.someverse.domain.repository.PointRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -75,6 +79,23 @@ object DataModule {
         // return FeedRemoteDataSource(feedApiService)
     }
 
+    /**
+     * Provide PointDataSource implementation
+     *
+     * SWITCH BETWEEN LOCAL AND REMOTE HERE:
+     * - Local (Mock): return PointLocalDataSource()
+     * - Remote (API): return PointRemoteDataSource(pointApiService)
+     */
+    @Provides
+    @Singleton
+    fun providePointDataSource(): PointDataSource {
+        // 현재: Local (Mock) 사용
+        return PointLocalDataSource()
+
+        // 나중에 Remote로 교체:
+        // return PointRemoteDataSource(pointApiService)
+    }
+
     // ==================== Repositories ====================
 
     @Provides
@@ -99,5 +120,13 @@ object DataModule {
         dataSource: FeedDataSource  // Interface 주입!
     ): FeedRepository {
         return FeedRepositoryImpl(dataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun providePointRepository(
+        dataSource: PointDataSource  // Interface 주입!
+    ): PointRepository {
+        return PointRepositoryImpl(dataSource)
     }
 }
