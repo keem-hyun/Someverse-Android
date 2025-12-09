@@ -3,18 +3,22 @@ package com.someverse.data.di
 import com.someverse.data.impl.AuthRepositoryImpl
 import com.someverse.data.impl.ChatRepositoryImpl
 import com.someverse.data.impl.FeedRepositoryImpl
+import com.someverse.data.impl.FileRepositoryImpl
 import com.someverse.data.impl.PointRepositoryImpl
 import com.someverse.data.local.AuthLocalDataSource
 import com.someverse.data.local.ChatLocalDataSource
 import com.someverse.data.local.FeedLocalDataSource
+import com.someverse.data.local.FileLocalDataSource
 import com.someverse.data.local.PointLocalDataSource
 import com.someverse.data.source.AuthDataSource
 import com.someverse.data.source.ChatDataSource
 import com.someverse.data.source.FeedDataSource
+import com.someverse.data.source.FileDataSource
 import com.someverse.data.source.PointDataSource
 import com.someverse.domain.repository.AuthRepository
 import com.someverse.domain.repository.ChatRepository
 import com.someverse.domain.repository.FeedRepository
+import com.someverse.domain.repository.FileRepository
 import com.someverse.domain.repository.PointRepository
 import dagger.Module
 import dagger.Provides
@@ -96,6 +100,23 @@ object DataModule {
         // return PointRemoteDataSource(pointApiService)
     }
 
+    /**
+     * Provide FileDataSource implementation
+     *
+     * SWITCH BETWEEN LOCAL AND REMOTE HERE:
+     * - Local (Mock): return FileLocalDataSource()
+     * - Remote (API): return FileRemoteDataSource(fileApiService)
+     */
+    @Provides
+    @Singleton
+    fun provideFileDataSource(): FileDataSource {
+        // 현재: Local (Mock) 사용
+        return FileLocalDataSource()
+
+        // 나중에 Remote로 교체:
+        // return FileRemoteDataSource(fileApiService)
+    }
+
     // ==================== Repositories ====================
 
     @Provides
@@ -128,5 +149,13 @@ object DataModule {
         dataSource: PointDataSource  // Interface 주입!
     ): PointRepository {
         return PointRepositoryImpl(dataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFileRepository(
+        dataSource: FileDataSource  // Interface 주입!
+    ): FileRepository {
+        return FileRepositoryImpl(dataSource)
     }
 }
