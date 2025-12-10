@@ -1,6 +1,7 @@
 package com.someverse.presentation.ui.main
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -26,6 +28,7 @@ import com.someverse.presentation.navigation.BottomNavItem
 import com.someverse.presentation.navigation.Screen
 import com.someverse.presentation.ui.chat.ChatScreen
 import com.someverse.presentation.ui.chat.DetailChatScreen
+import com.someverse.presentation.ui.feed.CreateFeedScreen
 import com.someverse.presentation.ui.feed.FeedScreen
 import com.someverse.presentation.ui.matching.MatchingScreen
 import com.someverse.presentation.ui.myprofile.MyProfileScreen
@@ -45,7 +48,8 @@ fun MainScreen() {
     // Bottom navigation을 숨길 화면들
     val screensWithoutBottomBar = listOf(
         Screen.WaitingRoom.route,
-        Screen.DetailChat.route
+        Screen.DetailChat.route,
+        Screen.CreateFeed.route
     )
     val shouldShowBottomBar = currentRoute !in screensWithoutBottomBar
 
@@ -60,14 +64,33 @@ fun MainScreen() {
         NavHost(
             navController = navController,
             startDestination = Screen.Feed.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
         ) {
             composable(Screen.MyProfile.route) {
                 MyProfileScreen()
             }
 
             composable(Screen.Feed.route) {
-                FeedScreen()
+                FeedScreen(
+                    onAddFeedClick = {
+                        navController.navigate(Screen.CreateFeed.route)
+                    }
+                )
+            }
+
+            composable(Screen.CreateFeed.route) {
+                CreateFeedScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onFeedCreated = {
+                        navController.popBackStack()
+                    },
+                    onSearchClick = {
+                        // TODO: Navigate to movie search screen
+                    }
+                )
             }
 
             composable(Screen.Matching.route) {
@@ -120,8 +143,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     NavigationBar(
         containerColor = Color.White,
-        contentColor = PrimaryPurple,
-        windowInsets = WindowInsets(0.dp)
+        contentColor = PrimaryPurple
     ) {
         BottomNavItem.items.forEach { item ->
             val isSelected = currentDestination?.hierarchy?.any {
@@ -132,11 +154,11 @@ fun BottomNavigationBar(navController: NavHostController) {
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
-                        contentDescription = item.title
+                        contentDescription = stringResource(id = item.titleRes)
                     )
                 },
                 label = {
-                    Text(text = item.title)
+                    Text(text = stringResource(id = item.titleRes))
                 },
                 selected = isSelected,
                 onClick = {

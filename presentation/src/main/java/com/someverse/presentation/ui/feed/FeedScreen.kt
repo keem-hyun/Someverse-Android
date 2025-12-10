@@ -39,6 +39,7 @@ import kotlin.math.absoluteValue
  */
 @Composable
 fun FeedScreen(
+    onAddFeedClick: () -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -75,7 +76,7 @@ fun FeedScreen(
                 )
                 .size(58.dp)
                 .background(Color.White, CircleShape)  // White border background
-                .clickable { /* TODO: Handle add action */ },
+                .clickable { onAddFeedClick() },
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -108,6 +109,7 @@ fun FeedTopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .statusBarsPadding()  // Status Bar 영역만큼 패딩 추가
             .height(52.dp)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
